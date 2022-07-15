@@ -1,0 +1,47 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}{% endblock%}
+
+{% block style %}
+     <style>
+        #k1league{margin: 0 auto; width : 100%; margin-top: 30px}
+        #k1league th {border-bottom:3px solid gray; text-align: center; padding: 5px; font-size: 20px}
+        #k1league td { font-size: 20px; text-align: center;}
+    </style>
+{% endblock%}
+
+{% block contents %}
+<div class="bg-dark" id="main">
+    <h1 class="pt-3 text-center text-white fw-bold">경기 일정/결과</h1>
+    <table id='k1league' class="table table-dark table-striped table-hover fw-bold text-center">
+        <thead class="thead">
+            <tr style="height: 60px; vertical-align: middle">
+                <th>경기날짜</th>
+                <th>경기기시간</th>
+                <th>홈팀</th>
+                <th>스코어</th>
+                <th>원정팀</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in mbs %}
+            <tr class="text-warning">
+                <td>{{ m.date }}</td>
+                <td>{{ m.time }}</td>
+                <td><img src="/static/imgs/{{ m.home }}/reclogo.png">{{ m.home }}</td>
+                {% if m.score != 'null' %}
+                    <td>{{ m.score }}</td>
+                {% else %}
+                    <td>경기 진행 예정</td>
+                {% endif %}
+                <td><img src="/static/imgs/{{ m.away }}/reclogo.png">{{ m.away }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+
+{% block script %}{% endblock %}

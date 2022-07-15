@@ -1,0 +1,151 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static '/css/vendor/board_style.css' %}">
+{#    <link rel="stylesheet" href="{% static '/css/vendor/board.css' %}">#}
+
+{% endblock %}
+
+{% block contents %}
+
+<div class="sub-top">
+	<h2 class="campton">뉴스</h2>
+	<p>K리그1・2의 최신 소식을 모두 확인 할 수 있는 공간입니다.</p>
+</div>      <!-- 뉴스 -->
+
+<div class="sub-contents-wrap">     <!-- 틀 -->
+
+	<div class="contents news"> <!-- content1 -->
+
+		<ul class="tab-btns sub double">
+
+			<li class="active"><a href="{% url 'news' %}"><span>전체</span></a></li>
+			<li><a href="{% url 'announce' %}"><span>공지사항</span></a></li>
+			<li><a href="{% url 'teamplayer' %}"><span>구단</span></a></li>
+
+		</ul>   <!-- 전체, 공지사항, 구단 -->
+
+        <div class="col-sm-5 d-flex flex-row sch-box">
+
+            <select id="findtype" name="findtype" class="form-select w-25">
+                    <option value="title">제   목</option>
+                    <option value="content">내   용</option>
+            </select>&nbsp;
+
+            <input type="text" id="findkeyword" name="findkeyword"
+                   class="form-control w-50" placeholder="검색어를 입력하세요">&nbsp;
+            <button type="button" id="findbtn" class="btn btn-light">
+                        <i class="bi bi-search"></i></button>
+
+        </div>
+
+        <div class="table-wrap board-list list">   <!-- 표 -->
+            <table>
+
+                <colgroup>
+                    <col style="width: 100px;">
+                    <col style="width: auto;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                </colgroup>
+
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>등록일</th>
+                    <th>조회수</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                {% for n in nt %}
+                <tr>
+                    <td>{{ n.id }}</td>
+{#                    <td>{{ a.title }}</td>  <!-- 링크 걸기 -->#}
+                    <td style="text-align: left"><a href="{% url 'news_detail' %}?no={{ n.id }}">
+                        <span style="color:white; background-color: black"; >　{{ n.category }}　</span>　
+                        {{ n.title }}</a></td>  <!-- 링크 걸기 -->
+                    <td>{{ n.regdate }}</td>
+                    <td>{{ n.view }}</td>
+                </tr>
+                {% endfor %}
+
+{#                    <tr onclick = "location.href='/news_view.do?seq=86107&category=notice&orderBy=seq&viewOption=list&page=1'">#}
+{#                        <td> 657 </td>#}
+{#                        <td class="left" style="cursor: pointer;">#}
+{#                            <span class="high-label">notice</span>하나원큐 K리그2 2022 22라운드 프리뷰#}
+{#                        </td>#}
+{#                        <td>2022.06.21</td>#}
+{#                        <td>146</td>#}
+{#                    </tr>#}
+
+                </tbody>
+
+            </table>
+        </div>  <!-- 표 -->
+
+    </div> <!-- content1 -->
+
+    <div class="center">
+
+        <ul class="pagination justify-content-center">
+{#        <ul class="pagination justify-content-center">#}
+            <li class="page-item">
+                <a href="?page=1&{{ query }}"> &lt; &lt; </a>      <!-- Query -->
+            </li>
+
+            {% if request.GET.page|add:0 > 1 %}
+            <li class="page-item">
+                <a href="?page={{ request.GET.page|add:-1 }}&{{ query }}">&lt; </a>      <!-- Query -->
+            </li>
+            {% endif %}
+
+            {% for i in range %}
+                {% if i <= pages %}
+                <li class="page-item {% if i == request.GET.page|add:0 %}active{% endif %}">
+                    <a href="?page={{ i }}&{{ query }}">{{ i }}</a>      <!-- Query -->
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if request.GET.page|add:0 < pages %}
+            <li class="page-item">
+                <a href="?page={{ request.GET.page|add:1 }}&{{ query }}">&gt;</a>       <!-- Query -->
+            </li>
+            {% endif %}
+
+            <li class="page-item">
+                <a href="?page={{ pages }}&{{ query }}"> &gt; &gt; </a>     <!-- Query -->
+            </li>
+
+        </ul>      <!-- 이전, 번호, 다음 링크 -->
+
+    </div>  <!-- 번호1 -->
+
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    const findtype = document.querySelector('#findtype');
+    const findkeyword = document.querySelector('#findkeyword');
+    const findbtn = document.querySelector('#findbtn');
+
+    findbtn?.addEventListener('click', () => {
+        if ( findkeyword.value =='' ) alert('검색어를 입력하세요');
+        else {
+            let query = '?type=' + findtype.value;
+            query += '&keyword=' + findkeyword.value;
+            location.href='{% url 'news' %}' + query;
+        }
+    });
+
+</script>
+{% endblock %}
